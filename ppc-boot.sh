@@ -67,6 +67,16 @@ done
 
 qemu="$qemu_prefix/bin/qemu-system-ppc"
 
+if [[ ! -f "$qemu" || ! -f "${qemu}64" ]]; then
+    echo "$me: no QEMU binaries in \"$qemu_prefix\" directory"
+    exit 1
+fi
+
+if [ ! -d "$buildroot_dir" ]; then
+    echo "$me: unknown \"$buildroot_dir\" directory for buildroot images"
+    exit 1
+fi
+
 spawn_qemu()
 {
     machine=$1

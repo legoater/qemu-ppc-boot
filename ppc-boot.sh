@@ -223,13 +223,27 @@ spawn_qemu()
     expect \
 	-c "spawn $qemu_cmd" \
 	-c "set timeout $timeout" \
-	-c 'expect timeout               { puts -nonewline stderr "TIMEOUT"; exit 1 } \
+	-c 'expect "SLOF"                { puts -nonewline stderr "FW "; \
+					   exp_continue } \
+		   "OPAL v"              { puts -nonewline stderr "FW "; \
+					   exp_continue } \
+		   ">> OpenBIOS"         { puts -nonewline stderr "FW "; \
+					   exp_continue } \
+		   "U-Boot"              { puts -nonewline stderr "FW "; \
+					   exp_continue } \
 		   "=>"	                 { send "bootm 0x1000000 0x1800000\r"; \
 					   exp_continue } \
+		   "Linux version "      { puts -nonewline stderr "Linux "; \
+					   exp_continue } \
+		   "/init as init"       { puts -nonewline stderr "/init "; \
+					   exp_continue } \
+		   "lease of 10.0.2.15"  { puts -nonewline stderr "net "; \
+					   exp_continue } \
+		   timeout               { puts -nonewline stderr "TIMEOUT"; exit 1 } \
 		   "Kernel panic"        { puts -nonewline stderr "PANIC";   exit 2 } \
 		   "illegal instruction" { puts -nonewline stderr "SIGILL";  exit 3 } \
 		   "Segmentation fault"  { puts -nonewline stderr "SEGV";    exit 4 } \
-		   "buildroot login:"' \
+		   "buildroot login:"    { puts -nonewline stderr "login " }' \
 	-c 'send "root\r"' \
 	-c 'expect timeout      { puts -nonewline stderr "TIMEOUT"; exit 1 } \
 		   "#"' \

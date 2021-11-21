@@ -223,6 +223,8 @@ spawn_qemu()
 	-c "spawn $qemu_cmd" \
 	-c "set timeout $timeout" \
 	-c 'expect timeout               { puts -nonewline stderr "TIMEOUT"; exit 1 } \
+		   "=>"	                 { send "bootm 0x1000000 0x1800000\r"; \
+					   exp_continue } \
 		   "Kernel panic"        { puts -nonewline stderr "PANIC";   exit 2 } \
 		   "illegal instruction" { puts -nonewline stderr "SIGILL";  exit 3 } \
 		   "Segmentation fault"  { puts -nonewline stderr "SEGV";    exit 4 } \

@@ -218,18 +218,23 @@ spawn_qemu()
     # TODO : 
     #  - Exit faster
     #  - Catch more error
-    #    . SIGILL for unimplemented instructions 
-    #    . SIGSEGV
     #
     expect \
 	-c "spawn $qemu_cmd" \
 	-c "set timeout $timeout" \
-	-c 'expect timeout { exit 1 } "buildroot login:"' \
+	-c 'expect timeout               { puts -nonewline stderr "TIMEOUT"; exit 1 } \
+		   "Kernel panic"        { puts -nonewline stderr "PANIC";   exit 2 } \
+		   "illegal instruction" { puts -nonewline stderr "SIGILL";  exit 3 } \
+		   "Segmentation fault"  { puts -nonewline stderr "SEGV";    exit 4 } \
+		   "buildroot login:"' \
 	-c 'send "root\r"' \
-	-c 'expect timeout { exit 1 } "#"' \
+	-c 'expect timeout      { puts -nonewline stderr "TIMEOUT"; exit 1 } \
+		   "#"' \
 	-c 'send "poweroff\r"' \
-	-c 'expect timeout { exit 1 } "halted"' \
-	-c "expect -i $spawn_id eof"
+	-c 'expect timeout      { puts -nonewline stderr "TIMEOUT"; exit 1 } \
+		   "halted"     { puts -nonewline stderr "DONE"; exit 0 }  \
+		   "Power down" { puts -nonewline stderr "DONE"; exit 0 }' \
+	-c "expect -i $spawn_id eof" 2>&3
 }
 
 tests_machines=${*:-"$machines"}
@@ -238,6 +243,6 @@ exec 3>&1
 
 for m in $tests_machines; do
     echo -n "$m : " >&3
-    spawn_qemu $m && pass=OK || pass=FAILED
-    echo "$pass" >&3
+    spawn_qemu $m && pass=PASSED || pass=FAILED
+    echo " ($pass)" >&3
 done

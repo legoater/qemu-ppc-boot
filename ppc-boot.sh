@@ -15,7 +15,7 @@ buildroot_dir=./buildroot
 quiet=
 
 # ref405ep is broken, mac99+7450 also
-machines32="bamboo sam460ex g3beige mac99 e500mc" 
+machines32="bamboo sam460ex g3beige mac99 mpc8544ds e500mc"
 
 # lack support for powernv10
 machines64="e5500 g5-32 g5-64 pseries pseriesle powernv8 powernv9" 
@@ -117,6 +117,14 @@ spawn_qemu()
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,if=virtio,format=raw"
 	    ;;
 	
+	mpc8544ds)
+	    buildroot_images=$buildroot_dir/qemu_ppc_${machine}-latest
+
+	    machine_args="-m 1G -M mpc8544ds"
+	    kernel_args="-kernel $buildroot_images/vmlinux"
+	    net_args="-net nic,model=e1000 -net user"
+	    ;;
+
 	e5500)
 	    qemu64=64
 	    buildroot_images=$buildroot_dir/qemu_ppc64_${machine}-latest

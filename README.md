@@ -19,10 +19,10 @@ for these.
 * `powernv8/ppc64le` POWER8 HV CPU
 * `powernv9/ppc64le` POWER9 HV CPU
 
-Tests currently broken ;
+Tests currently broken :
 
 * `ref405ep/ppc` issue in CPU 405EP model (Soft TLBs probably)
-* `mac99/ppc` using 745x CPUs (Soft TLBs)
+* `mac99/ppc` using 745x CPUs (Soft TLBs). Need OpenBIOS support and OS support.
 
 ## Building
 
@@ -34,7 +34,7 @@ above machines : https://github.com/legoater/buildroot/
 For all tests, simply run :
 
 ```
-$ ./ppc-test.sh -q --prefix=/path/to/qemu/install/
+$ ./ppc-boot.sh -q --prefix=/path/to/qemu/install/
 bamboo : DONE (PASSED)
 sam460ex : DONE (PASSED)
 g3beige : DONE (PASSED)
@@ -55,12 +55,12 @@ powernv9 : DONE (PASSED)
 The ref405ep machine is not included by default :
 
 ```
-$ ./ppc-test.sh -q --prefix=/path/to/qemu/install/
+$ ./ppc-boot.sh -q --prefix=/path/to/qemu/install/
 ref405ep : SEGV (FAILED)
 ```
 
 For a simple machine with a verbose output, run
 
 ```
-$ ./ppc-test.sh --prefix=/path/to/qemu/install/ <machine>
+$ ./ppc-boot.sh --prefix=/path/to/qemu/install/ <machine>
 ```

@@ -37,6 +37,7 @@ Known values for OPTION are:
 				Defaults to "$qemu_prefix".
     -b|--buildroot <DIR>	directory where to find builroot images. 
 				Defaults to "$buildroot_dir".
+    -o|--openbios <FILE>	use <FILE> as a custom OpenBIOS firmware
 
 Possible machines are:
 
@@ -46,7 +47,7 @@ EOF
     exit 1;
 }
 
-options=`getopt -o hqp:b: -l help,quiet,prefix:,buildroot: -- "$@"`
+options=`getopt -o hqp:b:o: -l help,quiet,prefix:,buildroot:openbios: -- "$@"`
 if [ $? -ne 0 ]
 then
         usage
@@ -60,6 +61,7 @@ do
 	-q|--quiet)	quiet=1; shift 1;;
 	-p|--prefix)	qemu_prefix="$2"; shift 2;;
 	-b|--buildroot)	buildroot_dir="$2"; shift 2;;
+	-o|--openbios)	openbios="$2"; shift 2;;
 	--)		shift 1; break ;;
 	*)		break ;;
     esac
@@ -75,6 +77,15 @@ fi
 if [ ! -d "$buildroot_dir" ]; then
     echo "$me: unknown \"$buildroot_dir\" directory for buildroot images"
     exit 1
+fi
+
+if [ -n "$openbios" ]; then
+    if [ -f "$openbios" ]; then
+	openbios_args="-bios $openbios"
+    else
+	echo "$me: invalid \"$openbios\" OpenBIOS file image"
+	exit 1
+    fi
 fi
 
 spawn_qemu()
@@ -112,7 +123,7 @@ spawn_qemu()
 	g3beige)
 	    buildroot_images=$buildroot_dir/qemu_ppc_${machine}-latest
 	    
-	    machine_args="-m 1G -M $machine -cpu g3"
+	    machine_args="-m 1G -M $machine $openbios_args -cpu g3"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/sda\""
 	    net_args="-net nic,model=rtl8139 -net user"
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,format=raw"
@@ -150,7 +161,7 @@ spawn_qemu()
 	    machine=mac99
 	    buildroot_images=$buildroot_dir/qemu_ppc_${machine}-latest
 	    
-	    machine_args="-m 1G -M ${machine},via=pmu -cpu $cpu"
+	    machine_args="-m 1G -M ${machine},via=pmu $openbios_args -cpu $cpu"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/sda\""
 	    net_args="-net nic,model=sungem -net user"
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,format=raw"
@@ -162,7 +173,7 @@ spawn_qemu()
 	    buildroot_images64=$buildroot_dir/qemu_ppc64_${machine}-latest
 	    buildroot_images32=$buildroot_dir/qemu_ppc_${machine}-latest
 	    
-	    machine_args="-m 1G -M ${machine},via=pmu -cpu 970"
+	    machine_args="-m 1G -M ${machine},via=pmu $openbios_args -cpu 970"
 	    kernel_args="-kernel $buildroot_images64/vmlinux -append \"root=/dev/sda\""
 	    net_args="-net nic,model=sungem -net user"
 	    hd_args="-drive file=$buildroot_images32/rootfs.ext2,format=raw"
@@ -173,7 +184,7 @@ spawn_qemu()
 	    machine=mac99
 	    buildroot_images=$buildroot_dir/qemu_ppc64_${machine}-latest
 	    
-	    machine_args="-m 1G -M ${machine},via=pmu -cpu 970"
+	    machine_args="-m 1G -M ${machine},via=pmu $openbios_args -cpu 970"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/sda\""
 	    net_args="-net nic,model=sungem -net user"
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,format=raw"

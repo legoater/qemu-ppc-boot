@@ -220,7 +220,8 @@ spawn_qemu()
 	    qemu64=64
 	    buildroot_images=$buildroot_dir/qemu_ppc64le_powernv-latest
 	    
-	    machine_args="-m 1G -M $machine -device ipmi-bmc-sim,id=bmc0 -device isa-ipmi-bt,bmc=bmc0,irq=10"
+	    bmc_args="-device ipmi-bmc-sim,id=bmc0 -device isa-ipmi-bt,bmc=bmc0,irq=10"
+	    machine_args="-m 1G -M $machine $bmc_args"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/nvme0n1\""
 	    net_args="-device e1000e,bus=pcie.1,addr=0x0,netdev=net0 -netdev user,id=net0"
 	    hd_args="-device nvme,bus=pcie.2,addr=0x0,drive=drive0,serial=1234 \
@@ -232,7 +233,7 @@ spawn_qemu()
     esac 
 
     qemu_cmd="$qemu$qemu64 $machine_args $kernel_args $initrd_args $hd_args $net_args"
-    qemu_cmd="$qemu_cmd -serial stdio -nodefaults -nographic"
+    qemu_cmd="$qemu_cmd -serial stdio -nodefaults -nographic -snapshot"
 
     if [ -n "$quiet" ]; then
 	exec 1>$logfile 2>&1

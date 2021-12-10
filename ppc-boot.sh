@@ -15,7 +15,7 @@ buildroot_dir=./buildroot
 quiet=
 
 # ref405ep is broken, mac99+7450 also
-machines32="bamboo sam460ex g3beige mac99-g4 mpc8544ds e500mc"
+machines32="bamboo sam460ex g3beige mac99-g4 mpc8544ds e500mc 40p"
 
 # lack support for powernv10
 machines64="e5500 g5-32 g5-64 pseries pseriesle8 pseriesle9 pseriesle10 powernv8 powernv9"
@@ -90,6 +90,11 @@ fi
 
 spawn_qemu()
 {
+    local machine_args
+    local kernel_args
+    local net_args
+    local hd_args
+
     machine=$1
     logfile=${machine}.log
 
@@ -154,6 +159,14 @@ spawn_qemu()
 	    kernel_args="-kernel $buildroot_images/uImage -append \"root=/dev/vda\""
 	    net_args="-net nic,model=virtio-net-pci -net user"
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,if=virtio,format=raw"
+	    ;;
+
+	40p)
+	    cpu=604
+	    buildroot_images=$buildroot_dir/qemu_ppc_${machine}-latest
+
+	    machine_args="-M ${machine} $openbios_args -cpu $cpu"
+	    hd_args="-cdrom images/zImage.initrd.sandalfoot -boot d"
 	    ;;
 
 	mac99-*)
@@ -266,6 +279,7 @@ spawn_qemu()
 		   "Kernel panic"        { puts -nonewline stderr "PANIC";   exit 2 } \
 		   "illegal instruction" { puts -nonewline stderr "SIGILL";  exit 3 } \
 		   "Segmentation fault"  { puts -nonewline stderr "SEGV";    exit 4 } \
+		   "activate this console." { puts -nonewline stderr "login "} \
 		   "buildroot login:"    { puts -nonewline stderr "login " }' \
 	-c 'send "root\r"' \
 	-c 'expect timeout      { puts -nonewline stderr "TIMEOUT"; exit 1 } \
@@ -273,6 +287,7 @@ spawn_qemu()
 	-c 'send "poweroff\r"' \
 	-c 'expect timeout      { puts -nonewline stderr "TIMEOUT"; exit 1 } \
 		   "halted"     { puts -nonewline stderr "DONE"; exit 0 }  \
+		   "Terminated" { puts -nonewline stderr "DONE"; exit 0 }  \
 		   "Power down" { puts -nonewline stderr "DONE"; exit 0 }' \
 	-c "expect -i $spawn_id eof" 2>&3
 }

@@ -196,7 +196,7 @@ spawn_qemu()
 	    buildroot_images=$buildroot_dir/qemu_ppc64_${machine}-latest
 	    poweroff_expect="Power down"
 
-	    machine_args="-m 1G -M $machine -cpu POWER7"
+	    machine_args="-m 1G -M $machine -cpu POWER7 -nodefaults"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/sda\""
 	    net_args="-net nic -net user"
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,if=scsi,format=raw"
@@ -209,7 +209,7 @@ spawn_qemu()
 	    machine=pseries
 	    buildroot_images=$buildroot_dir/qemu_ppc64le_${machine}-latest
 	    
-	    machine_args="-m 1G -M $machine -cpu $cpu"
+	    machine_args="-m 1G -M $machine -cpu $cpu -nodefaults"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/sda\""
 	    net_args="-net nic -net user"
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,if=scsi,format=raw"
@@ -220,8 +220,7 @@ spawn_qemu()
 	    qemu64=64
 	    buildroot_images=$buildroot_dir/qemu_ppc64le_powernv-latest
 	    
-	    bmc_args="-device ipmi-bmc-sim,id=bmc0 -device isa-ipmi-bt,bmc=bmc0,irq=10"
-	    machine_args="-m 1G -M $machine $bmc_args"
+	    machine_args="-m 1G -M $machine"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/nvme0n1\""
 	    net_args="-device e1000e,bus=pcie.1,addr=0x0,netdev=net0 -netdev user,id=net0"
 	    hd_args="-device nvme,bus=pcie.2,addr=0x0,drive=drive0,serial=1234 \
@@ -233,7 +232,7 @@ spawn_qemu()
     esac 
 
     qemu_cmd="$qemu$qemu64 $machine_args $kernel_args $initrd_args $hd_args $net_args"
-    qemu_cmd="$qemu_cmd -serial stdio -nodefaults -nographic -snapshot"
+    qemu_cmd="$qemu_cmd -serial mon:stdio -nographic -snapshot"
 
     if [ -n "$quiet" ]; then
 	exec 1>$logfile 2>&1

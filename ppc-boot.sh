@@ -18,7 +18,7 @@ quiet=
 machines32="bamboo sam460ex g3beige mac99-g4 mpc8544ds e500mc 40p"
 
 # lack support for powernv10
-machines64="e5500 g5-32 g5-64 pseries pseriesle8 pseriesle9 pseriesle10 powernv8 powernv9"
+machines64="e5500 e6500 g5-32 g5-64 pseries pseriesle8 pseriesle9 pseriesle10 powernv8 powernv9"
 
 machines="$machines32 $machines64"
 
@@ -151,11 +151,11 @@ spawn_qemu()
 	    net_args="-net nic,model=e1000 -net user"
 	    ;;
 
-	e5500)
+	e5500|e6500)
 	    qemu64=64
-	    buildroot_images=$buildroot_dir/qemu_ppc64_${machine}-latest
+	    buildroot_images=$buildroot_dir/qemu_ppc64_e5500-latest
 	    
-	    machine_args="-m 1G -M ppce500 -cpu e5500"
+	    machine_args="-m 1G -M ppce500 -cpu ${machine}"
 	    kernel_args="-kernel $buildroot_images/uImage -append \"root=/dev/vda\""
 	    net_args="-net nic,model=virtio-net-pci -net user"
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,if=virtio,format=raw"

@@ -92,6 +92,7 @@ spawn_qemu()
 {
     local machine_args
     local kernel_args
+    local initrd_args
     local net_args
     local hd_args
 

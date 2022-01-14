@@ -10,7 +10,7 @@
 
 me=${0##*/}
 
-qemu_prefix=/usr
+qemu_prefix=/usr/bin
 buildroot_dir=./buildroot
 quiet=
 
@@ -67,7 +67,7 @@ do
     esac
 done
 
-qemu="$qemu_prefix/bin/qemu-system-ppc"
+qemu="$qemu_prefix/qemu-system-ppc"
 
 if [[ ! -f "$qemu" || ! -f "${qemu}64" ]]; then
     echo "$me: no QEMU binaries in \"$qemu_prefix\" directory"

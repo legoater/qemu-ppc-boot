@@ -104,9 +104,9 @@ spawn_qemu()
 	ref405ep)
 	    buildroot_images=$buildroot_dir/qemu_ppc_${machine}-latest
 	    
-	    machine_args="-M $machine -bios $buildroot_images/ppc405_rom.bin -serial null"
-	    kernel_args="-kernel $buildroot_images/cuImage.hotfoot"
-	    initrd_args="-initrd $buildroot_images/rootfs.cpio.uboot"
+	    machine_args="-M $machine -serial null"
+	    kernel_args="-kernel $buildroot_images/cuImage.hotfoot.elf"
+	    initrd_args="-initrd $buildroot_images/rootfs.cpio"
 	    ;;
 
 	bamboo)

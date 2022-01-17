@@ -15,7 +15,7 @@ buildroot_dir=./buildroot
 quiet=
 
 # mac99+7450 is broken
-machines32="ref405ep bamboo sam460ex g3beige mac99-g4 mpc8544ds e500mc 40p"
+machines32="ref405ep bamboo sam460ex g3beige mac99-g4 mac99-7447 mac99-7448 mac99-7450 mpc8544ds e500mc 40p"
 
 # lack support for powernv10
 machines64="e5500 e6500 g5-32 g5-64 pseries-970 pseries-970mp pseries-POWER5+ pseries pseriesle8 pseriesle9 pseriesle10 powernv8 powernv9"

@@ -22,6 +22,9 @@ machines64="e5500 e6500 g5-32 g5-64 pseries-970 pseries-970mp pseries-POWER5+ ps
 
 machines="$machines32 $machines64"
 
+PASSED="[32mPASSED[0m"
+FAILED="[31mFAILED[0m"
+
 usage()
 {
     cat <<EOF
@@ -314,6 +317,6 @@ exec 3>&1
 
 for m in $tests_machines; do
     echo -n "$m : " >&3
-    spawn_qemu $m && pass=PASSED || pass=FAILED
+    spawn_qemu $m && pass=$PASSED || pass=$FAILED
     echo " ($pass)" >&3
 done

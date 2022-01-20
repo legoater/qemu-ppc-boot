@@ -102,13 +102,14 @@ spawn_qemu()
     timeout=20
 
     case "$machine" in
-	ref405ep)
-	    buildroot_images=$buildroot_dir/qemu_ppc_${machine}-latest
+	ref405ep*)
+	    buildroot_images=$buildroot_dir/qemu_ppc_ref405ep-latest
 	    
 	    machine_args="-M $machine -serial null"
 	    kernel_args="-kernel $buildroot_images/cuImage.hotfoot.elf"
 	    initrd_args="-initrd $buildroot_images/rootfs.cpio"
-	    ;;
+            net_args="-net nic,model=rtl8139,addr=3 -net user"
+ 	    ;;
 
 	bamboo)
 	    buildroot_images=$buildroot_dir/qemu_ppc_${machine}-latest

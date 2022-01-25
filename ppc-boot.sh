@@ -15,7 +15,7 @@ buildroot_dir=./buildroot
 quiet=
 
 # mac99+7450 is broken
-machines32="ref405ep bamboo sam460ex g3beige mac99-g4 mac99-7447 mac99-7448 mac99-7450 mpc8544ds e500mc 40p"
+machines32="ref405ep bamboo sam460ex g3beige-604 g3beige-g3 mac99-g4 mac99-7447 mac99-7448 mac99-7450 mpc8544ds e500mc 40p"
 
 # lack support for powernv10
 machines64="e5500 e6500 g5-32 g5-64 pseries-970 pseries-970mp pseries-POWER5+ pseries pseriesle8 pseriesle9 pseriesle10 powernv8 powernv9"
@@ -130,10 +130,12 @@ spawn_qemu()
 	    net_args="-device virtio-net-pci,netdev=net0 -netdev user,id=net0"
 	    ;;
 
-	g3beige)
+	g3beige-*)
+	    cpu="${machine#g3beige-*}"
+	    machine=g3beige
 	    buildroot_images=$buildroot_dir/qemu_ppc_${machine}-latest
 	    
-	    machine_args="-m 1G -M $machine $openbios_args -cpu g3"
+	    machine_args="-m 1G -M $machine $openbios_args -cpu $cpu"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/sda\""
 	    net_args="-net nic,model=rtl8139 -net user"
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,format=raw"

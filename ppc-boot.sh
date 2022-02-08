@@ -18,7 +18,7 @@ quiet=
 machines32="ref405ep bamboo sam460ex g3beige-604 g3beige-g3 mac99-g4 mac99-7447 mac99-7448 mac99-7450 mpc8544ds e500mc 40p"
 
 # lack support for powernv10
-machines64="e5500 e6500 g5-32 g5-64 pseries-970 pseries-970mp pseries-POWER5+ pseries pseriesle8 pseriesle9 pseriesle10 powernv8 powernv9"
+machines64="e5500 e6500 g5-32 g5-64 pseries-970 pseries-970mp pseries-POWER5+ pseries pseriesle8 pseriesle9 pseriesle-vof pseriesle10 powernv8 powernv9"
 
 machines="$machines32 $machines64"
 
@@ -231,6 +231,20 @@ spawn_qemu()
 	    poweroff_expect="Power down"
 
 	    machine_args="-m 1G -M $machine -cpu POWER7 -nodefaults"
+	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/sda\""
+	    net_args="-net nic -net user"
+	    hd_args="-drive file=$buildroot_images/rootfs.ext2,if=scsi,format=raw"
+	    ;;
+	
+	pseriesle-vof)
+	    timeout=30
+	    qemu64=64
+	    cpu="POWER9"
+	    machine=pseries,x-vof=on
+	    buildroot_images=$buildroot_dir/qemu_ppc64_pseries-latest
+	    poweroff_expect="Power down"
+
+	    machine_args="-m 1G -M $machine -cpu $cpu -nodefaults"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/sda\""
 	    net_args="-net nic -net user"
 	    hd_args="-drive file=$buildroot_images/rootfs.ext2,if=scsi,format=raw"

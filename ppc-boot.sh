@@ -241,7 +241,7 @@ spawn_qemu()
 	    qemu64=64
 	    cpu="POWER9"
 	    machine=pseries,x-vof=on
-	    buildroot_images=$buildroot_dir/qemu_ppc64_pseries-latest
+	    buildroot_images=$buildroot_dir/qemu_ppc64le_pseries-latest
 	    poweroff_expect="Power down"
 
 	    machine_args="-m 1G -M $machine -cpu $cpu -nodefaults"

@@ -266,7 +266,7 @@ spawn_qemu()
 	powernv*)
 	    timeout=30
 	    qemu64=64
-	    buildroot_images=$buildroot_dir/qemu_ppc64le_powernv-latest
+	    buildroot_images=$buildroot_dir/qemu_ppc64le_powernv8-latest
 	    
 	    machine_args="-m 1G -M $machine"
 	    kernel_args="-kernel $buildroot_images/vmlinux -append \"root=/dev/nvme0n1\""

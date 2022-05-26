@@ -71,8 +71,9 @@ do
 done
 
 qemu="$qemu_prefix/bin/qemu-system-ppc"
+qemu64="${qemu}64"
 
-if [[ ! -f "$qemu" || ! -f "${qemu}64" ]]; then
+if [[ ! -f "$qemu" || ! -f "$qemu64" ]]; then
     echo "$me: no QEMU binaries in \"$qemu_prefix\" directory"
     exit 1
 fi
@@ -159,7 +160,7 @@ spawn_qemu()
 	    ;;
 
 	e5500|e6500)
-	    qemu64=64
+	    qemu=$qemu64
 	    buildroot_images=$buildroot_dir/qemu_ppc64_e5500-latest
 	    
 	    machine_args="-m 1G -M ppce500 -cpu ${machine}"
@@ -188,7 +189,7 @@ spawn_qemu()
 	    ;;
 	
 	g5-32)
-	    qemu64=64
+	    qemu=$qemu64
 	    machine=mac99
 	    buildroot_images64=$buildroot_dir/qemu_ppc64_${machine}-latest
 	    buildroot_images32=$buildroot_dir/qemu_ppc_${machine}-latest
@@ -200,7 +201,7 @@ spawn_qemu()
 	    ;;
 	
 	g5-64)
-	    qemu64=64
+	    qemu=$qemu64
 	    machine=mac99
 	    buildroot_images=$buildroot_dir/qemu_ppc64_${machine}-latest
 	    
@@ -212,7 +213,7 @@ spawn_qemu()
 	
 	pseries-*)
 	    timeout=30
-	    qemu64=64
+	    qemu=$qemu64
 	    cpu="${machine#pseries-*}"
 	    machine=pseries
 	    buildroot_images=$buildroot_dir/qemu_ppc64_${machine}_p5p-latest
@@ -226,7 +227,7 @@ spawn_qemu()
 
 	pseries)
 	    timeout=30
-	    qemu64=64
+	    qemu=$qemu64
 	    buildroot_images=$buildroot_dir/qemu_ppc64_${machine}-latest
 	    poweroff_expect="Power down"
 
@@ -238,7 +239,7 @@ spawn_qemu()
 	
 	pseriesle-vof)
 	    timeout=30
-	    qemu64=64
+	    qemu=$qemu64
 	    cpu="POWER9"
 	    machine=pseries,x-vof=on
 	    buildroot_images=$buildroot_dir/qemu_ppc64le_pseries-latest
@@ -252,7 +253,7 @@ spawn_qemu()
 	
 	pseriesle*)
 	    timeout=30
-	    qemu64=64
+	    qemu=$qemu64
 	    cpu="POWER${machine#pseriesle*}"
 	    machine=pseries
 	    buildroot_images=$buildroot_dir/qemu_ppc64le_${machine}-latest
@@ -265,7 +266,7 @@ spawn_qemu()
 	
 	powernv*)
 	    timeout=30
-	    qemu64=64
+	    qemu=$qemu64
 	    buildroot_images=$buildroot_dir/qemu_ppc64le_powernv8-latest
 	    
 	    machine_args="-m 1G -M $machine"
@@ -279,7 +280,7 @@ spawn_qemu()
 	    exit 1;
     esac 
 
-    qemu_cmd="$qemu$qemu64 $machine_args $kernel_args $initrd_args $hd_args $net_args"
+    qemu_cmd="$qemu $machine_args $kernel_args $initrd_args $hd_args $net_args"
     qemu_cmd="$qemu_cmd -serial mon:stdio -nographic -snapshot"
 
     if [ -n "$quiet" ]; then

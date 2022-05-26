@@ -41,6 +41,7 @@ Known values for OPTION are:
     -b|--buildroot <DIR>	directory where to find builroot images. 
 				Defaults to "$buildroot_dir".
     -o|--openbios <FILE>	use <FILE> as a custom OpenBIOS firmware
+       --64			use the 64-bit build for all the tests
 
 Possible machines are:
 
@@ -50,7 +51,7 @@ EOF
     exit 1;
 }
 
-options=`getopt -o hqp:b:o: -l help,quiet,prefix:,buildroot:openbios: -- "$@"`
+options=`getopt -o hqp:b:o: -l help,quiet,prefix:,buildroot:openbios:,64 -- "$@"`
 if [ $? -ne 0 ]
 then
         usage
@@ -65,6 +66,7 @@ do
 	-p|--prefix)	qemu_prefix="$2"; shift 2;;
 	-b|--buildroot)	buildroot_dir="$2"; shift 2;;
 	-o|--openbios)	openbios="$2"; shift 2;;
+	--64)           sixtyfour=1; shift 1;;
 	--)		shift 1; break ;;
 	*)		break ;;
     esac
@@ -73,9 +75,18 @@ done
 qemu="$qemu_prefix/bin/qemu-system-ppc"
 qemu64="${qemu}64"
 
-if [[ ! -f "$qemu" || ! -f "$qemu64" ]]; then
-    echo "$me: no QEMU binaries in \"$qemu_prefix\" directory"
-    exit 1
+if [[ -n "$sixtyfour" ]]; then
+    if [[ ! -f "$qemu64" ]]; then
+	echo "$me: no 64-bit QEMU binary in \"$qemu_prefix\" directory"
+	exit 1
+    fi
+
+    qemu="$qemu64"
+else
+    if [[ ! -f "$qemu" || ! -f "$qemu64" ]]; then
+	echo "$me: no QEMU binaries in \"$qemu_prefix\" directory"
+	exit 1
+    fi
 fi
 
 if [ ! -d "$buildroot_dir" ]; then

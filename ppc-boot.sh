@@ -326,6 +326,7 @@ spawn_qemu()
 		   "Kernel panic"        { puts -nonewline stderr "PANIC";   exit 2 } \
 		   "illegal instruction" { puts -nonewline stderr "SIGILL";  exit 3 } \
 		   "Segmentation fault"  { puts -nonewline stderr "SEGV";    exit 4 } \
+		   ": Assertion"         { puts -nonewline stderr "ASSERT";  exit 5 } \
 		   "activate this console." { puts -nonewline stderr "login "} \
 		   "buildroot login:"    { puts -nonewline stderr "login " }' \
 	-c 'send "root\r"' \

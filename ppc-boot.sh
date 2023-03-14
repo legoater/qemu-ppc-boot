@@ -306,6 +306,12 @@ spawn_qemu()
     expect \
 	-c "spawn $qemu_cmd" \
 	-c "set timeout $timeout" \
+	-c 'expect -re "^qemu-system-ppc64: (?!warning:)(.*)" \
+	   	       			 { puts -nonewline stderr "ERROR: $expect_out(1,string)"; \
+					   exit 6 } \
+		   -re "^qemu-system-ppc: (?!warning:)(.*)" \
+	   	       			 { puts -nonewline stderr "ERROR: $expect_out(1,string)"; \
+					   exit 6 }' \
 	-c 'expect "SLOF"                { puts -nonewline stderr "FW "; \
 					   exp_continue } \
 		   "OPAL v"              { puts -nonewline stderr "FW "; \

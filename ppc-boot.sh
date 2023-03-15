@@ -328,9 +328,11 @@ spawn_qemu()
 		   "Segmentation fault"  { puts -nonewline stderr "SEGV";    exit 4 } \
 		   ": Assertion"         { puts -nonewline stderr "ASSERT";  exit 5 } \
 		   "activate this console." { puts -nonewline stderr "login "} \
+		   "powernv login:"      { puts -nonewline stderr "login "} \
 		   "buildroot login:"    { puts -nonewline stderr "login " }' \
 	-c 'send "root\r"' \
 	-c 'expect timeout      { puts -nonewline stderr "TIMEOUT"; exit 1 } \
+		   "Password:"           { send "passw0rd\r"; exp_continue } \
 		   "#"' \
 	-c 'send "poweroff\r"' \
 	-c 'expect timeout      { puts -nonewline stderr "TIMEOUT"; exit 1 } \
